@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
+using System.Collections.Generic;
 
 public enum GameMode
 {
@@ -7,13 +9,24 @@ public enum GameMode
     FreeRoam
 }
 
+[System.Serializable]
+public class LeaderboardEntry
+{
+    public float timeRemaining;  // Sisa waktu pas finish
+    public int score;           // skor akhir
+    public string timestamp;     // Jam pencapaian (misal: 22:45)
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public static GameMode SelectedMode = GameMode.TimeAttack;
 
+    // list statis supaya data leaderboard nggak hilang pas game nya di restart (scene reload)
+    public static List<LeaderboardEntry> LeaderboardData = new List<LeaderboardEntry>();
+
     [Header("Pengaturan Time Attack")]
-    [SerializeField] private float timeLimitSeconds = 45f;       // Batas waktu awal
+    [SerializeField] private float timeLimitSeconds = 60f;       // Batas waktu awal 60 detik
     [SerializeField] private float extraTimePerCheckpoint = 5f;  // Bonus waktu per ring (+5 detik)
     [SerializeField] private int scorePerSecondRemaining = 100; 
 
@@ -28,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     public GameMode CurrentMode => SelectedMode;
     public float TimeRemaining => Mathf.Max(0f, timeRemaining);
+    public float TimeLimitSeconds => timeLimitSeconds;
     public int TotalCheckpoints => totalCheckpoints;
     public int PassedCheckpoints => passedCheckpoints;
 
@@ -95,14 +109,14 @@ public class GameManager : MonoBehaviour
 
     public void RegisterCheckpointPassed()
     {
-        if (!IsGameActive) return;
+        if (!IsGameActive || SelectedMode == GameMode.FreeRoam) return;
         passedCheckpoints++;
         timeRemaining += extraTimePerCheckpoint; // TAMBAH EXTRA TIME
     }
 
     public void CheckFinishLine()
     {
-        if (!IsGameActive) return;
+        if (!IsGameActive || SelectedMode == GameMode.FreeRoam) return;
 
         if (passedCheckpoints >= totalCheckpoints)
         {
@@ -121,6 +135,27 @@ public class GameManager : MonoBehaviour
         IsGameActive = false;
         IsWon = true;
         FinalScore = Mathf.RoundToInt(timeRemaining * scorePerSecondRemaining);
+
+        if (SelectedMode == GameMode.TimeAttack && Mathf.Approximately(timeLimitSeconds, 60f))
+        {
+            LeaderboardEntry newEntry = new LeaderboardEntry
+            {
+                timeRemaining = timeRemaining,
+                score = FinalScore,
+                timestamp = DateTime.Now.ToString("HH:mm:ss")
+            };
+
+            LeaderboardData.Add(newEntry);
+
+            // urutan skor dari yang tertinggi ke terendah
+            LeaderboardData.Sort((a, b) => b.score.CompareTo(a.score));
+
+            // simpan maksimal 10 rekor terbaik aja
+            if (LeaderboardData.Count > 10)
+            {
+                LeaderboardData.RemoveAt(LeaderboardData.Count - 1);
+            }
+        }
     }
 
     public void OnGameLost(string reason)

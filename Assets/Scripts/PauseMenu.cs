@@ -9,6 +9,10 @@ public class PauseMenu : MonoBehaviour
     public GameObject pausecontainer;
     public GameObject settingscontainer;
     public GameObject sessioncontainer;
+    public GameObject personalleaderboardcontainer;
+
+    [Header("Leaderboard Display")]
+    public TextMeshProUGUI leaderboardContentText;
 
     [Header("Settings Controls")]
     public FPV_OSD fpvOSD;
@@ -32,6 +36,11 @@ public class PauseMenu : MonoBehaviour
                 backbutton();
             }
 
+            else if (personalleaderboardcontainer != null && personalleaderboardcontainer.activeSelf)
+            {
+                backbutton();
+            }
+
             // kalo yang kebuka pause menu, tutup (Resume)
             else if (pausecontainer.activeSelf)
             {
@@ -51,6 +60,8 @@ public class PauseMenu : MonoBehaviour
     public void resumebutton() {
         pausecontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(false);
+        if (sessioncontainer != null) sessioncontainer.SetActive(false);
+        if (personalleaderboardcontainer != null) personalleaderboardcontainer.SetActive(false);
         Time.timeScale = 1f;
     }
 
@@ -66,13 +77,27 @@ public class PauseMenu : MonoBehaviour
         if (settingscontainer != null) settingscontainer.SetActive(false);
         if (sessioncontainer != null) sessioncontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(true);
+        if (personalleaderboardcontainer != null) personalleaderboardcontainer.SetActive(false);
     }
 
     public void sessionbutton()
     {
         pausecontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(false);
+        if (personalleaderboardcontainer != null) personalleaderboardcontainer.SetActive(false);
         if (sessioncontainer != null) sessioncontainer.SetActive(true);
+    }
+
+    public void leaderboardbutton()
+    {
+        pausecontainer.SetActive(false);
+        if (settingscontainer != null) settingscontainer.SetActive(false);
+        if (sessioncontainer != null) sessioncontainer.SetActive(false);
+        if (personalleaderboardcontainer != null)
+        {
+            personalleaderboardcontainer.SetActive(true);
+            UpdateLeaderboardDisplay();
+        }
     }
 
 
@@ -81,7 +106,28 @@ public class PauseMenu : MonoBehaviour
     {
         if (settingscontainer != null) settingscontainer.SetActive(false);
         if (sessioncontainer != null) sessioncontainer.SetActive(false);
+        if (personalleaderboardcontainer != null) personalleaderboardcontainer.SetActive(false);
         pausecontainer.SetActive(true);
+    }
+
+    public void UpdateLeaderboardDisplay()
+    {
+        if (leaderboardContentText == null) return;
+
+        if (GameManager.LeaderboardData == null || GameManager.LeaderboardData.Count == 0)
+        {
+            leaderboardContentText.text = "Belum Ada Catatan Rekor\n<size=12><color=#A0A0A0>(Khusus Time Attack 60s)</color></size>";
+            return;
+        }
+
+        string displayText = "<b>TOP RECORDS (TIME ATTACK 60S)</b>\n\n";
+        for (int i = 0; i < GameManager.LeaderboardData.Count; i++)
+        {
+            var record = GameManager.LeaderboardData[i];
+            displayText += $"#{i + 1}  |  Skor: <b>{record.score}</b> Points  |  Sisa Waktu: <b>{record.timeRemaining:0.00}s</b>  [{record.timestamp}]\n";
+        }
+
+        leaderboardContentText.text = displayText;
     }
 
     // HANDLER PEMILIHAN MODE
