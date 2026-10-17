@@ -23,7 +23,7 @@ Proyek Akhir IPPL
 | 6 | Kondisi kalah  |  selesai  | Kondisi kalah untuk mode time attack sudah dapat ter-trigger jika pemain menabrak, waktu habis, atau ada ring terlewat |
 | 7 | Session Select Option | Selesai | Pemain sudah dapat berpindah antara mode game time attack dan free roam dengan memanfaatkan session select option |
 | 8 | Personal Leaderboard Screen | selesai | pemain dapat melihat skor tertinggi mereka pada mode time attack (leaderboard hanya akan mencatat data time attack mode khusus untuk time limit 60s) |
-| 9 | Settings Screen | 90% | Toggle OSD dan slider time limit cuztomaztion sudah dapat digunakan, pengaturan terhadap transparansi OSD drone masih dalam tahap pengembangan |
+| 9 | Settings Screen | selesai | Toggle OSD dan slider time limit cuztomaztion sudah dapat digunakan, pengaturan terhadap transparansi OSD drone sudah dapat di atur |
 | 10 | Drone UI & OSD | 90% | Reticle, Speed, throttle, time left, ring checkpoint passed sudah tampil, alert peringatan benturan masih dalam tahap pengembangan |
 | 11 | teks menang dan kalah | Selesai | teks hasil menang/kalah sederhana yang menampilkan informasi kalah(sisa waktu, jumlah ring yang dilewati, dll) dan menang(total skor, sisa waktu, dll) . sudah dapat tampil |
 | 12 | Pause Screen | 90% | Resume, Retry, Settings, Change Session, Personal Leaderboard sudah dapat digunakan. Namun, saat ini hanya dapat di akses dengan control keyboard.  |
