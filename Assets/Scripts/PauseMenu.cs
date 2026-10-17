@@ -8,7 +8,7 @@ public class PauseMenu : MonoBehaviour
     [Header("UI Containers")]
     public GameObject pausecontainer;
     public GameObject settingscontainer;
-    public GameObject sessionContainer;
+    public GameObject sessioncontainer;
 
     [Header("Settings Controls")]
     public FPV_OSD fpvOSD;
@@ -27,7 +27,7 @@ public class PauseMenu : MonoBehaviour
                 backbutton();
             }
 
-            else if (sessionContainer != null && sessionContainer.activeSelf)
+            else if (sessioncontainer != null && sessioncontainer.activeSelf)
             {
                 backbutton();
             }
@@ -64,7 +64,7 @@ public class PauseMenu : MonoBehaviour
     {
         pausecontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(false);
-        if (sessionContainer != null) sessionContainer.SetActive(false);
+        if (sessioncontainer != null) sessioncontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(true);
     }
 
@@ -72,7 +72,7 @@ public class PauseMenu : MonoBehaviour
     {
         pausecontainer.SetActive(false);
         if (settingscontainer != null) settingscontainer.SetActive(false);
-        if (sessionContainer != null) sessionContainer.SetActive(true);
+        if (sessioncontainer != null) sessioncontainer.SetActive(true);
     }
 
 
@@ -80,7 +80,7 @@ public class PauseMenu : MonoBehaviour
     public void backbutton()
     {
         if (settingscontainer != null) settingscontainer.SetActive(false);
-        if (sessionContainer != null) sessionContainer.SetActive(false);
+        if (sessioncontainer != null) sessioncontainer.SetActive(false);
         pausecontainer.SetActive(true);
     }
 
