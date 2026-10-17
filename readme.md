@@ -61,7 +61,7 @@ Proyek Akhir IPPL
 
 
 
-## Kendala dan Rencana
+## Rencana selanjutnya
 
 
 - Rencana: Rencana pengembangan selanjutnya akan difokuskan pada fitur-fitur dan aset utama game yang belum selesai. Serta membuat input contoller (Xbox) dapat berinteraksi dengan elemen-elemen UI
