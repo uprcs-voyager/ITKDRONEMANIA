@@ -20,6 +20,9 @@ public class PauseMenu : MonoBehaviour
     public Slider timeLimitSlider;
     public TextMeshProUGUI timeLimitText;
 
+    [Header("OSD Settings")]
+    public Slider osdTransparencySlider;
+    public TextMeshProUGUI osdTransparencyText;
 
     void Update()
     {
@@ -55,6 +58,41 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+         //ngeload dan sinkronkan nilai Transparansi OSD
+        float savedAlpha = PlayerPrefs.GetFloat("OSD_Alpha", 0.80f);
+
+        if (osdTransparencySlider != null)
+        {
+            float sliderValue = osdTransparencySlider.maxValue > 1f ? savedAlpha * 100f : savedAlpha;
+            osdTransparencySlider.value = sliderValue;
+        }
+
+        if (osdTransparencyText != null)
+        {
+            osdTransparencyText.text = Mathf.RoundToInt(savedAlpha * 100f) + "%";
+        }
+
+        if (fpvOSD != null)
+        {
+            fpvOSD.SetOSDAlpha(savedAlpha);
+        }
+
+        //ngeload dan sinkronkan nilai Time Limit jika ada di PlayerPrefs
+        //if (timeLimitSlider != null && GameManager.Instance != null)
+        //{
+        //    float savedTimeLimit = PlayerPrefs.GetFloat("TimeLimit", GameManager.Instance.TimeLimitSeconds);
+        //    timeLimitSlider.value = savedTimeLimit;
+
+        //    if (timeLimitText != null)
+        //    {
+        //        timeLimitText.text = "Time Limit: " + savedTimeLimit.ToString("0") + " s";
+        //    }
+
+        //    GameManager.Instance.SetTimeLimit(savedTimeLimit);
+        //}
+    }
 
 
     public void resumebutton() {
@@ -79,6 +117,8 @@ public class PauseMenu : MonoBehaviour
         if (settingscontainer != null) settingscontainer.SetActive(true);
         if (personalleaderboardcontainer != null) personalleaderboardcontainer.SetActive(false);
     }
+
+
 
     public void sessionbutton()
     {
@@ -154,6 +194,22 @@ public class PauseMenu : MonoBehaviour
         if (fpvOSD != null)
         {
             fpvOSD.enabled = isEnabled; // Mematikan atau menyalakan fungsi OSD (buat milih OSD nya mau dikasi liat apa enggak)
+        }
+    }
+
+    public void OnOSDTransparencySliderChanged(float value)
+    {
+        // kalo slider bernilai 0 - 100, konversi ke skala 0.0 - 1.0
+        float alpha01 = value > 1f ? value / 100f : value;
+
+        if (fpvOSD != null)
+        {
+            fpvOSD.SetOSDAlpha(alpha01);
+        }
+
+        if (osdTransparencyText != null)
+        {
+            osdTransparencyText.text = Mathf.RoundToInt(alpha01 * 100f) + "%";
         }
     }
 

@@ -17,12 +17,15 @@ public class FPV_OSD : MonoBehaviour
     private void Awake()
     {
         cam = GetComponent<Camera>();
+        float savedAlpha = PlayerPrefs.GetFloat("OSD_Alpha", 0.80f);
+        osdColor.a = savedAlpha;
     }
 
     private void OnGUI()
     {
         if (droneRef == null || cam == null) return;
         if (Event.current.type != EventType.Repaint) return;
+        if (Time.timeScale == 0f) return;
 
         if (textStyle == null)
         {
@@ -46,8 +49,8 @@ public class FPV_OSD : MonoBehaviour
 
 
 
-      
 
+        Color currentWarningColor = new Color(warningColor.r, warningColor.g, warningColor.b, osdColor.a);
         float screenW = Screen.width;
         float screenH = Screen.height;
         Vector2 center = new Vector2(screenW * 0.5f, screenH * 0.5f);
@@ -55,17 +58,17 @@ public class FPV_OSD : MonoBehaviour
         if (GameManager.Instance != null && !GameManager.Instance.IsGameActive)
         {
 
-            if (bannerStyle == null)
-            {
-                bannerStyle = new GUIStyle(GUI.skin.label)
-                {
-                    fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter,
-                    // Reset padding & margin bawaan supaya nggak buat offset aneh
-                    padding = new RectOffset(0, 0, 0, 0),
-                    margin = new RectOffset(0, 0, 0, 0)
-                };
-            }
+            //if (bannerStyle == null)
+            //{
+            //    bannerStyle = new GUIStyle(GUI.skin.label)
+            //    {
+            //        fontStyle = FontStyle.Bold,
+            //        alignment = TextAnchor.MiddleCenter,
+            //        // Reset padding & margin bawaan supaya nggak buat offset aneh
+            //        padding = new RectOffset(0, 0, 0, 0),
+            //        margin = new RectOffset(0, 0, 0, 0)
+            //    };
+            //}
 
 
             if (GameManager.Instance.IsWon)
@@ -79,6 +82,7 @@ public class FPV_OSD : MonoBehaviour
             else
             {
                 bannerStyle.normal.textColor = warningColor;
+         
                 GUI.Label(new Rect(0, center.y - 30, screenW, 40), $"MISSION FAILED\n[{GameManager.Instance.FailReason}]", bannerStyle);
             }
 
@@ -168,5 +172,20 @@ public class FPV_OSD : MonoBehaviour
     private void DrawRect(Rect rect)
     {
         GUI.DrawTexture(rect, Texture2D.whiteTexture);
+    }
+
+    public void SetOSDAlpha(float alpha01)
+    {
+        // ngeclamp nilai supaya berada di rentang 0.0f sampai 1.0f
+        osdColor.a = Mathf.Clamp01(alpha01);
+
+        // ngeupdate warna textStyle kalo sudah ter inisialisasi
+        if (textStyle != null)
+        {
+            textStyle.normal.textColor = osdColor;
+        }
+        PlayerPrefs.SetFloat("OSD_Alpha", osdColor.a);
+        PlayerPrefs.Save();
+
     }
 }
