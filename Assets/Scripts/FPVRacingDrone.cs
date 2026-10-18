@@ -123,6 +123,15 @@ public class FPVRacingDrone : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+        }
+    }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -361,16 +370,24 @@ public class FPVRacingDrone : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (isDestroyed) return;
+        // Jika game sudah tidak aktif atau di mode Free Roam, abaikan tabrakan
+        if (GameManager.Instance == null || !GameManager.Instance.IsGameActive) return;
 
-        // Abaikan KALO  yang ditabrak adalah objek trigger (seperti Ring Checkpoint)
-        if (collision.collider.isTrigger) return;
-
-        // Jika menabrak dinding/lantai/pintu biasa
-        Detonate();
-        if (GameManager.Instance != null)
+        // Khusus Mode Time Attack: Menabrak objek apapun = KALAH
+        if (GameManager.Instance.CurrentMode == GameMode.TimeAttack)
         {
-            GameManager.Instance.OnGameLost("DRONE MENABRAK RINTANGAN!");
+            //Pemicu state kalah di GameManager
+            string objectName = collision.gameObject.name;
+            GameManager.Instance.OnGameLost($"TABRAKAN DENGAN {objectName.ToUpper()}!");
+
+            //Hentikan pergerakan drone supaya nggak tembus/melayang
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true; // matiin simulasi fisika
+            }
         }
     }
 
@@ -378,8 +395,9 @@ public class FPVRacingDrone : MonoBehaviour
     {
         isDestroyed = true;
 
-        // Jika slot explosionEffectPrefab diisi, efek ledakan akan muncul.
+        // Jika slot explosionEffectPrefab diisi, efek ledakan bakal muncul.
         // kalo kosong (null), baris ini dilewati tanpa error.
+        // belum di isi soalnya belum buat Effect nya awokwkww
         if (explosionEffectPrefab != null)
         {
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);

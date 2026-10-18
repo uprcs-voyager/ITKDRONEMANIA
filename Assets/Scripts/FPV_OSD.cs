@@ -87,7 +87,6 @@ public class FPV_OSD : MonoBehaviour
             }
 
             bannerStyle.fontSize = 15;
-            GUI.Label(new Rect(0, center.y  - 10, screenW, 40), "Tekan [R] / Tombol Reset untuk Coba Lagi", bannerStyle);
             bannerStyle.fontSize = 14;
             return;
         }
@@ -96,13 +95,13 @@ public class FPV_OSD : MonoBehaviour
         textStyle.normal.textColor = osdColor;
 
 
-        // 1. Crosshair tengah
+        //Crosshair tengah
         DrawRect(new Rect(center.x - 12, center.y - 1, 8, 2));
         DrawRect(new Rect(center.x + 4, center.y - 1, 8, 2));
         DrawRect(new Rect(center.x - 1, center.y - 12, 2, 8));
         DrawRect(new Rect(center.x - 1, center.y + 4, 2, 8));
 
-        // 2. Garis cakrawala (artificial horizon)
+        //  Garis cakrawala (artificial horizon)
         Transform camT = cam.transform;
 
         // Pitch kamera: positif = kamera menatap ke atas
@@ -129,7 +128,7 @@ public class FPV_OSD : MonoBehaviour
         string throttleText = $"THR: {droneRef.CurrentThrottle01 * 100f:0}%";
         string modeText = (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.FreeRoam)
     ? "MODE: FREE ROAM"
-    : "MODE: Time Attack ACRO / AIR";
+    : "MODE: Time Attack";
 
         GUI.Label(new Rect(30, screenH - 60, 220, 25), speedText, textStyle);
         GUI.Label(new Rect(30, screenH - 40, 220, 25), modeText, textStyle);
