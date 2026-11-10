@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject sessionPanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject leaderboardPanel;
+    [SerializeField] private GameObject skinSelectsPanel;
     [SerializeField] private GameObject wipPanel; // Panel untuk fitur On Progress
 
     [Header("Start Session")]
@@ -85,9 +86,14 @@ public class MainMenu : MonoBehaviour
         SetControllerFocus(leaderboardFirstSelected);
     }
 
-    // --- Tombol Fitur GDD (On Progress) ---
+    // --- Tombol SHOW SKIN, COLLECTIBLLES, AND PROGRESSION ---
 
-    public void ShowSkinSelects() => ShowWorkInProgress("SKIN SELECTS");
+    public void ShowSkinSelects()
+    {
+        ShowOnly(skinSelectsPanel);
+        //SetControllerFocus(skinSelectsFirstSelected);
+    }
+        
     public void ShowCollectibles() => ShowWorkInProgress("COLLECTIBLES");
     public void ShowProgression() => ShowWorkInProgress("PROGRESSION");
 
@@ -108,6 +114,7 @@ public class MainMenu : MonoBehaviour
         SetActive(settingsPanel, target == settingsPanel);
         SetActive(leaderboardPanel, target == leaderboardPanel);
         SetActive(wipPanel, target == wipPanel);
+        SetActive(skinSelectsPanel, target == skinSelectsPanel);
     }
 
     private static void SetActive(GameObject go, bool active)
