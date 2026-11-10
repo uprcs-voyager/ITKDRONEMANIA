@@ -378,7 +378,7 @@ public class FPVRacingDrone : MonoBehaviour
         {
             //Pemicu state kalah di GameManager
             string objectName = collision.gameObject.name;
-            GameManager.Instance.OnGameLost($"TABRAKAN DENGAN {objectName.ToUpper()}!");
+            GameManager.Instance.OnGameLost($"TABRAKAN DENGAN {objectName.ToUpper()}!", CurrentSpeedKmh);
 
             //Hentikan pergerakan drone supaya nggak tembus/melayang
             Rigidbody rb = GetComponent<Rigidbody>();
@@ -390,6 +390,8 @@ public class FPVRacingDrone : MonoBehaviour
             }
         }
     }
+
+  
 
     private void Detonate()
     {

@@ -34,10 +34,20 @@ public class GameManager : MonoBehaviour
     private int totalCheckpoints;
     private int passedCheckpoints;
 
+    // Telemetri & Statistik 
+    private FPVRacingDrone playerDrone;
+    private float timeSpent;
+    private float accumulatedSpeedTime;
+
     public bool IsGameActive { get; private set; } = true;
     public bool IsWon { get; private set; } = false;
     public string FailReason { get; private set; } = "";
     public int FinalScore { get; private set; } = 0;
+
+    // Property Publik Telemetri
+    public float TimeSpent => timeSpent;
+    public float ImpactSpeedKmh { get; private set; } = 0f;
+    public float AverageSpeedKmh => timeSpent > 0f ? (accumulatedSpeedTime / timeSpent) : 0f;
 
     public GameMode CurrentMode => SelectedMode;
     public float TimeRemaining => Mathf.Max(0f, timeRemaining);
@@ -53,7 +63,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+
+        float customTime = PlayerPrefs.GetFloat("TimeLimit", 60f);
+        timeLimitSeconds = customTime;
+        timeRemaining = customTime;
+
         timeRemaining = timeLimitSeconds;
+        timeSpent = 0f;
+        accumulatedSpeedTime = 0f;
+        playerDrone = FindAnyObjectByType<FPVRacingDrone>();
         // Hitung otomatis semua objek checkpoint yang ada tag "Checkpoint" nya di scene
         GameObject[] checkpoints = GameObject.FindGameObjectsWithTag("Checkpoint");
         FinishLine finish = FindAnyObjectByType<FinishLine>();
@@ -95,6 +113,13 @@ public class GameManager : MonoBehaviour
         }
 
         if (!IsGameActive) return;
+
+        // Akumulasi Waktu Bermain & Kecepatan Rata-Rata
+        timeSpent += Time.deltaTime;
+        if (playerDrone != null)
+        {
+            accumulatedSpeedTime += playerDrone.CurrentSpeedKmh * Time.deltaTime;
+        }
 
         // Waktu hanya berkurang pada mode Time Attack
         if (SelectedMode == GameMode.TimeAttack)
@@ -158,12 +183,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnGameLost(string reason)
+    public void OnGameLost(string reason, float impactSpeed = 0f)
     {
+        if (!IsGameActive) return;
+
         IsGameActive = false;
         IsWon = false;
         FailReason = reason;
         FinalScore = 0;
+        ImpactSpeedKmh = impactSpeed;
     }
 
     public void SetModeAndStart(GameMode mode)
